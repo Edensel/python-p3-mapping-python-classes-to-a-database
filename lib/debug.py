@@ -2,6 +2,7 @@
 
 from config import CONN, CURSOR
 from song import Song
+from artist import Artist
 
 
 if __name__ == '__main__':
