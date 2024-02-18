@@ -1,7 +1,8 @@
 from config import CONN, CURSOR
 
 class Song:
-
+    all = []  # Define `all` as a class attribute
+    
     def __init__(self, name, album):
         self.id = None
         self.name = name
@@ -32,3 +33,40 @@ class Song:
         song = cls(name, album) 
         song.save() 
         return song  
+    
+    @classmethod
+    def get_all(cls):
+        sql = """
+            SELECT *
+            FROM songs
+        """
+
+        all = CURSOR.execute(sql).fetchall()
+
+        cls.all = [cls.new_from_db(row) for row in all]  # Populate Song.all list with Song objects
+
+    @classmethod
+    def new_from_db(cls, row):
+        id, name, album = row
+        song = cls(name, album)
+        song.id = id
+        return song
+    
+    @classmethod
+    def find_by_name(cls, name):
+        sql = """
+            SELECT *
+            FROM songs
+            WHERE name = ?
+            LIMIT 1
+        """
+
+        song = CURSOR.execute(sql, (name,)).fetchone()
+
+        return cls.new_from_db(song)    
+    
+    
+    
+
+
+
